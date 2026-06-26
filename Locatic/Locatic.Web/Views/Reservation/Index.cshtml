@@ -1,0 +1,30 @@
+@model IEnumerable<Locatic.Application.DTOs.ReservationDto>
+
+<h1>Réservations</h1>
+<a asp-action="Create">Nouvelle réservation</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Voiture</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>@reservation.ClientName</td>
+                <td>@reservation.LicensePlate</td>
+                <td>@reservation.StartDate.ToShortDateString()</td>
+                <td>@reservation.EndDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@reservation.Id">Annuler</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
