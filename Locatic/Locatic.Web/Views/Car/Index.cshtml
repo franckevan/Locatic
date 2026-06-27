@@ -1,0 +1,32 @@
+@model IEnumerable<Locatic.Application.DTOs.CarDto>
+<h1>Voitures</h1>
+<a asp-action="Create">Ajouter une voiture</a>
+<table>
+    <thead>
+        <tr>
+            <th>Immatriculation</th>
+            <th>Marque</th>
+            <th>Modèle</th>
+            <th>Année</th>
+            <th>Tarif/jour</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.LicensePlate</td>
+                <td>@car.BrandName</td>
+                <td>@car.ModelName</td>
+                <td>@car.Year</td>
+                <td>@car.DailyRate €</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@car.Id">Détails</a>
+                    <a asp-action="Edit" asp-route-id="@car.Id">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@car.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
