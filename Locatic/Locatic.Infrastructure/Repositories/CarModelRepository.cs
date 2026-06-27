@@ -1,50 +1,50 @@
-using Locatic.Application.DTOs;
-using Locatic.Application.Interfaces;
+
 using Locatic.Domain.Entities;
 using Locatic.Domain.Interfaces;
+using Locatic.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
-namespace Locatic.Application.Services{
+namespace Locatic.Infrastructure.Repositories{
 
-    public class CarModelService : ICarModelService
+    public class CarModelRepository : ICarModelRepository
     {
-        private readonly ICarModelRepository _repository;
+        private readonly LocaticDbContext _context;
 
-        public CarModelService(ICarModelRepository repository)
+        public CarModelRepository(LocaticDbContext context)
         {
-            _repository = repository;
+            _context = context;
         }
 
-        public async Task<IEnumerable<CarModelDto>> GetAllAsync()
+        public async Task<IEnumerable<CarModel>> GetAllAsync()
         {
-            var models = await _repository.GetAllAsync();
-            return models.Select(m => new CarModelDto { Id = m.Id, Name = m.Name, BrandId = m.BrandId, BrandName = m.Brand.Name });
+            return await _context.CarModels.Include(m => m.Brand).ToListAsync();
         }
 
-        public async Task<CarModelDto?> GetByIdAsync(int id)
+        public async Task<CarModel?> GetByIdAsync(int id)
         {
-            var model = await _repository.GetByIdAsync(id);
-            if (model == null) return null;
-            return new CarModelDto { Id = model.Id, Name = model.Name, BrandId = model.BrandId, BrandName = model.Brand.Name };
+            return await _context.CarModels.Include(m => m.Brand).FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task CreateAsync(CreateCarModelDto dto)
+        public async Task AddAsync(CarModel carModel)
         {
-            var model = new CarModel { Name = dto.Name, BrandId = dto.BrandId };
-            await _repository.AddAsync(model);
+            await _context.CarModels.AddAsync(carModel);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(int id, CreateCarModelDto dto)
+        public async Task UpdateAsync(CarModel carModel)
         {
-            var model = await _repository.GetByIdAsync(id);
-            if (model == null) return;
-            model.Name = dto.Name;
-            model.BrandId = dto.BrandId;
-            await _repository.UpdateAsync(model);
+            _context.CarModels.Update(carModel);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            await _repository.DeleteAsync(id);
+            var model = await _context.CarModels.FindAsync(id);
+            if (model != null)
+            {
+                _context.CarModels.Remove(model);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 
