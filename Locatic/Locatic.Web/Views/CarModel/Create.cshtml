@@ -1,0 +1,22 @@
+@model Locatic.Application.DTOs.CreateCarModelDto
+
+<h1>Ajouter un modÃ¨le</h1>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+    </div>
+    <div>
+        <label>Marque</label>
+        <select asp-for="BrandId">
+            @foreach (var brand in ViewBag.Brands)
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit">Enregistrer</button>
+</form>
+
+<a asp-action="Index">Retour</a>

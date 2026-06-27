@@ -1,0 +1,26 @@
+@model IEnumerable<Locatic.Application.DTOs.CarModelDto>
+
+<h1>Modèles</h1>
+<a asp-action="Create">Ajouter un modèle</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Marque</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.BrandName</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
