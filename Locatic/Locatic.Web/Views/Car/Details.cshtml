@@ -1,0 +1,11 @@
+@model Locatic.Application.DTOs.CarDto
+<h1>Détails voiture</h1>
+<p>Immatriculation : @Model.LicensePlate</p>
+<p>Marque : @Model.BrandName</p>
+<p>Modèle : @Model.ModelName</p>
+<p>Année : @Model.Year</p>
+<p>Places : @Model.Seats</p>
+<p>Carburant : @Model.FuelType</p>
+<p>Tarif/jour : @Model.DailyRate €</p>
+<a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a>
+<a asp-action="Index">Retour</a>

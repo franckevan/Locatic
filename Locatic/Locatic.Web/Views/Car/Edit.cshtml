@@ -1,0 +1,35 @@
+@model Locatic.Application.DTOs.CreateCarDto
+<h1>Modifier la voiture</h1>
+<form asp-action="Edit" method="post">
+    <div>
+        <label asp-for="LicensePlate"></label>
+        <input asp-for="LicensePlate" />
+    </div>
+    <div>
+        <label asp-for="Year"></label>
+        <input asp-for="Year" />
+    </div>
+    <div>
+        <label asp-for="DailyRate"></label>
+        <input asp-for="DailyRate" />
+    </div>
+    <div>
+        <label asp-for="Seats"></label>
+        <input asp-for="Seats" />
+    </div>
+    <div>
+        <label asp-for="FuelType"></label>
+        <input asp-for="FuelType" />
+    </div>
+    <div>
+        <label>ModÃ¨le</label>
+        <select asp-for="CarModelId">
+            @foreach (var carModel in ViewBag.CarModels)
+            {
+                <option value="@carModel.Id">@carModel.BrandName - @carModel.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit">Enregistrer</button>
+</form>
+<a asp-action="Index">Retour</a>

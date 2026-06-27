@@ -1,0 +1,17 @@
+@model Locatic.Application.DTOs.CreateBrandDto
+
+<h1>Ajouter une marque</h1>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+    </div>
+    <div>
+        <label asp-for="Country"></label>
+        <input asp-for="Country" />
+    </div>
+    <button type="submit">Enregistrer</button>
+</form>
+
+<a asp-action="Index">Retour</a>
