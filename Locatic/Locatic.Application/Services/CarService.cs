@@ -21,6 +21,10 @@ namespace Locatic.Application.Services{
                 DailyRate = c.DailyRate,
                 Seats = c.Seats,
                 FuelType = c.FuelType,
+                Mileage = c.Mileage,
+                Color = c.Color,
+                ImageUrl = c.ImageUrl,
+                Status = c.Status,
                 CarModelId = c.CarModelId,
                 ModelName = c.CarModel.Name,
                 BrandName = c.CarModel.Brand.Name
@@ -38,6 +42,10 @@ namespace Locatic.Application.Services{
                 DailyRate = c.DailyRate,
                 Seats = c.Seats,
                 FuelType = c.FuelType,
+                Mileage = c.Mileage,
+                Color = c.Color,
+                ImageUrl = c.ImageUrl,
+                Status = c.Status,
                 CarModelId = c.CarModelId,
                 ModelName = c.CarModel.Name,
                 BrandName = c.CarModel.Brand.Name
@@ -52,6 +60,10 @@ namespace Locatic.Application.Services{
                 DailyRate = dto.DailyRate,
                 Seats = dto.Seats,
                 FuelType = dto.FuelType,
+                Mileage = dto.Mileage,
+                Color = dto.Color,
+                ImageUrl = dto.ImageUrl ?? string.Empty,
+                Status = dto.Status,
                 CarModelId = dto.CarModelId
             };
             await _repository.AddAsync(car);
@@ -65,6 +77,10 @@ namespace Locatic.Application.Services{
             car.DailyRate = dto.DailyRate;
             car.Seats = dto.Seats;
             car.FuelType = dto.FuelType;
+            car.Mileage = dto.Mileage;
+            car.Color = dto.Color;
+            car.ImageUrl = dto.ImageUrl ?? string.Empty;
+            car.Status = dto.Status;
             car.CarModelId = dto.CarModelId;
             await _repository.UpdateAsync(car);
         }

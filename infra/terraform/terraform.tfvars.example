@@ -1,0 +1,6 @@
+# Copier ce fichier en terraform.tfvars (ignoré par git) et adapter les valeurs.
+
+kube_context          = "minikube"
+namespace             = "locatic"
+sqlite_storage        = "1Gi"
+sqlite_storage_class  = ""

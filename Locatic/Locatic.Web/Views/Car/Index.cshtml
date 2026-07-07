@@ -9,6 +9,9 @@
             <th>Modèle</th>
             <th>Année</th>
             <th>Tarif/jour</th>
+            <th>Couleur</th>
+            <th>Kilométrage</th>
+            <th>Statut</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -21,6 +24,9 @@
                 <td>@car.ModelName</td>
                 <td>@car.Year</td>
                 <td>@car.DailyRate €</td>
+                <td>@car.Color</td>
+                <td>@car.Mileage km</td>
+                <td>@car.Status</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@car.Id">Détails</a>
                     <a asp-action="Edit" asp-route-id="@car.Id">Modifier</a>

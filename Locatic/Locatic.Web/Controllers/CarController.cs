@@ -50,6 +50,10 @@ namespace Locatic.Web.Controllers{
                 DailyRate = car.DailyRate,
                 Seats = car.Seats,
                 FuelType = car.FuelType,
+                Mileage = car.Mileage,
+                Color = car.Color,
+                ImageUrl = car.ImageUrl,
+                Status = car.Status,
                 CarModelId = car.CarModelId
             };
             return View(dto);

@@ -40,3 +40,11 @@ msbuild.wrn
 
 # Environment / secrets
 *.env
+
+# SQLite runtime database (created at run/container start, never versioned)
+*.db
+*.db-shm
+*.db-wal
+
+# Test results (dotnet test --results-directory)
+TestResults/
