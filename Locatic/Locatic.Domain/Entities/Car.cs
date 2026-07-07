@@ -1,3 +1,5 @@
+using Locatic.Domain.Enums;
+
 namespace Locatic.Domain.Entities
 {
 
@@ -15,7 +17,15 @@ namespace Locatic.Domain.Entities
 
         public string FuelType { get; set; } = string.Empty ;
 
-        public int CarModelId { get; set;} 
+        public int Mileage { get; set; }
+
+        public string Color { get; set; } = string.Empty;
+
+        public string ImageUrl { get; set; } = string.Empty;
+
+        public CarStatus Status { get; set; } = CarStatus.Available;
+
+        public int CarModelId { get; set;}
 
         public CarModel CarModel { get; set; } = null! ;
 

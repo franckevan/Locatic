@@ -7,5 +7,12 @@
 <p>Places : @Model.Seats</p>
 <p>Carburant : @Model.FuelType</p>
 <p>Tarif/jour : @Model.DailyRate €</p>
+<p>Kilométrage : @Model.Mileage km</p>
+<p>Couleur : @Model.Color</p>
+<p>Statut : @Model.Status</p>
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <p><img src="@Model.ImageUrl" alt="Photo de la voiture" style="max-width:300px" /></p>
+}
 <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a>
 <a asp-action="Index">Retour</a>

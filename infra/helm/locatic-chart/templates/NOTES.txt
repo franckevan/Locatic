@@ -1,0 +1,13 @@
+Locatic est déployé.
+
+Point d'entrée (Nginx, minikube) :
+  minikube service {{ include "locatic.fullname" . }}-nginx-svc -n {{ .Release.Namespace }} --url
+
+Ou en port-forward direct :
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "locatic.fullname" . }}-nginx-svc 8080:{{ .Values.nginx.service.port }}
+
+Vérification :
+  curl http://localhost:8080/
+  curl http://localhost:8080/nginx-health
+
+L'application elle-même reste en ClusterIP et n'est jamais exposée directement.

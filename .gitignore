@@ -1,0 +1,22 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
+
+# Ansible
+*.retry
+
+# Helm
+**/charts/*.tgz
+
+# Secrets / env / kubeconfig
+.env
+*.env
+!*.env.example
+kubeconfig*
+*.pem
+*.key

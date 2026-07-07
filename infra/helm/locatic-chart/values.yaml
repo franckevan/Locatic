@@ -1,0 +1,68 @@
+# SQLite + un PVC ReadWriteOnce ne supportent qu'un seul pod à la fois.
+replicaCount: 1
+
+image:
+  repository: locatic
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+# Nom du PVC SQLite créé par Terraform (infra/terraform). Le chart ne crée
+# jamais lui-même ce volume : il le référence via existingClaim pour éviter
+# tout conflit de propriété entre Terraform et Helm.
+sqlite:
+  existingClaim: locatic-sqlite-pvc
+  mountPath: /data
+  fileName: locatic.db
+
+config:
+  aspnetcoreEnvironment: Production
+  aspnetcoreUrls: "http://+:8080"
+  containerPort: 8080
+
+service:
+  type: ClusterIP
+  port: 80
+
+probes:
+  readiness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    path: /health
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+# Nginx est le seul point d'entrée utilisateur. L'application n'est jamais
+# exposée directement : son Service reste en ClusterIP.
+nginx:
+  enabled: true
+  image:
+    repository: nginx
+    tag: "1.27-alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+# Activé une fois la stack Prometheus en place (voir étape monitoring).
+monitoring:
+  enabled: false
+  scrapePath: /health
+  scrapePort: 8080

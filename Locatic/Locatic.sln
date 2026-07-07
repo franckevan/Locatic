@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Locatic.Application", "Loca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Locatic.Infrastructure", "Locatic.Infrastructure\Locatic.Infrastructure.csproj", "{7B8B8239-3092-4975-8931-DFDC49B141DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Locatic.Tests", "Locatic.Tests\Locatic.Tests.csproj", "{DC9ADFD4-8D16-40A7-BDC2-A23C959348D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{7B8B8239-3092-4975-8931-DFDC49B141DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B8B8239-3092-4975-8931-DFDC49B141DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B8B8239-3092-4975-8931-DFDC49B141DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC9ADFD4-8D16-40A7-BDC2-A23C959348D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC9ADFD4-8D16-40A7-BDC2-A23C959348D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC9ADFD4-8D16-40A7-BDC2-A23C959348D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC9ADFD4-8D16-40A7-BDC2-A23C959348D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
