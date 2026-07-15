@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Locatic.Infrastructure.Data{
+namespace Locatic.Infrastructure.Data
+{
 
     public class LocaticDbContextFactory : IDesignTimeDbContextFactory<LocaticDbContext>
     {

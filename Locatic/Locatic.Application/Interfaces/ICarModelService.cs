@@ -1,6 +1,7 @@
 using Locatic.Application.DTOs;
 
-namespace Locatic.Application.Interfaces{
+namespace Locatic.Application.Interfaces
+{
 
     public interface ICarModelService
     {
@@ -12,7 +13,7 @@ namespace Locatic.Application.Interfaces{
 
         Task UpdateAsync(int id, CreateCarModelDto dto);
 
-        
+
         Task DeleteAsync(int id);
     }
 

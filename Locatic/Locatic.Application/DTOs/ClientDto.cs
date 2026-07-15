@@ -1,4 +1,5 @@
-namespace Locatic.Application.DTOs{
+namespace Locatic.Application.DTOs
+{
 
     public class ClientDto
     {
@@ -9,7 +10,7 @@ namespace Locatic.Application.DTOs{
         public string LastName { get; set; } = string.Empty;
 
         public string Email { get; set; } = string.Empty;
-        
+
         public string PhoneNumber { get; set; } = string.Empty;
     }
 

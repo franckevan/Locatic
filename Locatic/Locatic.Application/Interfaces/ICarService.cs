@@ -1,5 +1,6 @@
 using Locatic.Application.DTOs;
-namespace Locatic.Application.Interfaces{
+namespace Locatic.Application.Interfaces
+{
     public interface ICarService
     {
         Task<IEnumerable<CarDto>> GetAllAsync();

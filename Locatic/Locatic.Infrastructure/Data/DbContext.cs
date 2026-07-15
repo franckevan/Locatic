@@ -2,7 +2,8 @@ using Locatic.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Locatic.Infrastructure.Data{
+namespace Locatic.Infrastructure.Data
+{
 
     public class LocaticDbContext : DbContext
     {
@@ -11,7 +12,7 @@ namespace Locatic.Infrastructure.Data{
         {
         }
 
-        public DbSet<Brand> Brands { get; set; } 
+        public DbSet<Brand> Brands { get; set; }
 
         public DbSet<CarModel> CarModels { get; set; }
 

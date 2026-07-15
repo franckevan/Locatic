@@ -14,6 +14,6 @@ namespace Locatic.Domain.Entities
 
         public int ClientId { get; set; }
 
-        public Client Client { get; set; } = null! ;
+        public Client Client { get; set; } = null!;
     }
 }

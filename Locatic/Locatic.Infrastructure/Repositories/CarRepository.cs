@@ -2,7 +2,8 @@ using Locatic.Domain.Entities;
 using Locatic.Domain.Interfaces;
 using Locatic.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-namespace Locatic.Infrastructure.Repositories{
+namespace Locatic.Infrastructure.Repositories
+{
     public class CarRepository : ICarRepository
     {
         private readonly LocaticDbContext _context;

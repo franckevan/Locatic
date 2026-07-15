@@ -3,7 +3,8 @@ using Locatic.Application.Interfaces;
 using Locatic.Domain.Entities;
 using Locatic.Domain.Interfaces;
 
-namespace Locatic.Application.Services{
+namespace Locatic.Application.Services
+{
 
     public class ClientService : IClientService
     {

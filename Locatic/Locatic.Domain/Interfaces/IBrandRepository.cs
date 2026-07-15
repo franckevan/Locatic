@@ -1,6 +1,7 @@
 using Locatic.Domain.Entities;
 
-namespace Locatic.Domain.Interfaces{
+namespace Locatic.Domain.Interfaces
+{
 
     public interface IBrandRepository
     {

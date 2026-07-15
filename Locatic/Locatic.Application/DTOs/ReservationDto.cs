@@ -1,4 +1,5 @@
-namespace Locatic.Application.DTOs{
+namespace Locatic.Application.DTOs
+{
 
     public class ReservationDto
     {
@@ -12,7 +13,7 @@ namespace Locatic.Application.DTOs{
 
         public string LicensePlate { get; set; } = string.Empty;
 
-        
+
         public int ClientId { get; set; }
 
         public string ClientName { get; set; } = string.Empty;

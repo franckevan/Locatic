@@ -1,0 +1,39 @@
+# Build artifacts
+bin/
+obj/
+out/
+*.user
+*.suo
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# IDE
+.vs/
+.vscode/
+*.swp
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+!infra/terraform/terraform.tfvars.example
+
+# Ansible
+ansible/group_vars/local.yml
+ansible/*.retry
+
+# Secrets / env
+*.env
+.env.local
+
+# Kubernetes
+k8s/**/*secret*.yaml
+!k8s/**/*secret*.template.yaml
+
+# Docker
+docker-compose.override.yml

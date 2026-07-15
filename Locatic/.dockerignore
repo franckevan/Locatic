@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.git/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+docs/
+k8s/
+infra/
+ansible/
+helm/
+.github/
+README.md
