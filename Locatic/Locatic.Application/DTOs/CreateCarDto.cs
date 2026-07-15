@@ -18,4 +18,4 @@ namespace Locatic.Application.DTOs
     }
 
 
-}   
+}
