@@ -1,0 +1,5 @@
+# Copier ce fichier en terraform.tfvars (non versionné) pour surcharger les valeurs par défaut.
+
+kube_context        = "minikube"
+namespace           = "locatic"
+sqlite_storage_size = "1Gi"
