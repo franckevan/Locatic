@@ -1,0 +1,4 @@
+# Preuves d'exécution
+Ce dossier contient les captures d'écran et extraits de logs montrant les étapes clés du projet en fonctionnement réel :- Pull Request avec les checks CI verts (Lot A)- Pipeline GitHub Actions complet (build, test, scan, publication)- Image publiée sur GitHub Container Registry- `kubectl get all -n locatic` montrant l'application et Nginx déployés- Application accessible via Nginx dans un navigateur- Prometheus `/targets` avec les 4 cibles `up`- Dashboard Grafana "Locatic - Vue d'ensemble"- Persistance des données SQLite après redémarrage d'un pod
+Nommage suggéré : `01-pr-checks.png`, `02-pipeline-ci.png`, `03-image-ghcr.png`, `04-kubectl-get-all.png`,
+`05-app-nginx.png`, `06-prometheus-targets.png`, `07-grafana-dashboard.png`, `08-persistance-sqlite.png`.
