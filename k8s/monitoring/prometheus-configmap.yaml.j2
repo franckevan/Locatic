@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: {{ k8s_namespace }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    rule_files:
+      - /etc/prometheus/rules.yml
+    scrape_configs:
+      - job_name: locatic-app
+        static_configs:
+          - targets: ["locatic-app:8080"]
+      - job_name: nginx
+        static_configs:
+          - targets: ["nginx:9113"]
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets: ["kube-state-metrics:8080"]
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+  rules.yml: |
+    groups:
+      - name: locatic-alerts
+        rules:
+          - alert: AppDown
+            expr: up{job="locatic-app"} == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "L'application Locatic ne répond plus"
+              description: "Le endpoint /metrics de locatic-app est injoignable depuis 1 minute."
+          - alert: NginxDown
+            expr: up{job="nginx"} == 0
+            for: 1m labels:
+              severity: critical
+            annotations:
+              summary: "Nginx ne répond plus"
+              description: "L'exporter de métriques Nginx est injoignable depuis 1 minute."
+          - alert: SqlitePvcNotBound
+            expr: kube_persistentvolumeclaim_status_phase{namespace="{{ k8s_namespace }}", phase="Bound"} == 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Le volume SQLite n'est pas correctement monté"
+              description: "Le PersistentVolumeClaim de la base SQLite n'est pas à l'état Bound."
