@@ -34,6 +34,7 @@ ansible/*.retry
 # Kubernetes
 k8s/**/*secret*.yaml
 !k8s/**/*secret*.template.yaml
+k8s/rendered/
 
 # Docker
 docker-compose.override.yml

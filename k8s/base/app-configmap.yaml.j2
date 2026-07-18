@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: locatic-config
+  namespace: {{ k8s_namespace }}
+data:
+  ASPNETCORE_ENVIRONMENT: "{{ app_environment | default('Production') }}"
+  ConnectionStrings__DefaultConnection: "Data Source={{ sqlite_db_path | default('/data/locatic.db') }}"

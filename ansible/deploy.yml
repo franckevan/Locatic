@@ -1,0 +1,118 @@
+---
+- name: Déploiement local de Locatic sur minikube
+  hosts: local
+  gather_facts: false
+
+  tasks:
+    - name: Vérifier que kubectl est installé
+      ansible.builtin.command:
+        argv: [kubectl, version, --client]
+      register: kubectl_check
+      changed_when: false
+
+    - name: Vérifier que minikube est démarré
+      ansible.builtin.command:
+        argv: [minikube, status]
+      register: minikube_check
+      changed_when: false
+      failed_when: "'Running' not in minikube_check.stdout"
+
+    - name: Récupérer les outputs Terraform
+      ansible.builtin.command:
+        argv: [terraform, output, -json]
+        chdir: "{{ terraform_dir }}"
+      register: terraform_outputs_raw
+      changed_when: false
+
+    - name: Charger les outputs Terraform en variables
+      ansible.builtin.set_fact:
+        terraform_outputs: "{{ terraform_outputs_raw.stdout | from_json }}"
+
+    - name: Définir le namespace et le nom du PVC depuis Terraform
+      ansible.builtin.set_fact:
+        k8s_namespace: "{{ terraform_outputs.namespace.value }}"
+        sqlite_pvc_name: "{{ terraform_outputs.sqlite_pvc_name.value }}"
+
+    - name: Créer le dossier de rendu des manifests
+      ansible.builtin.file:
+        path: "{{ k8s_rendered_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Générer les manifests Kubernetes à partir des templates
+      ansible.builtin.template:
+        src: "{{ k8s_templates_dir }}/{{ item }}"
+        dest: "{{ k8s_rendered_dir }}/{{ item | regex_replace('\\.j2$', '') }}"
+        mode: "0644"
+      loop:
+        - app-configmap.yaml.j2
+        - app-deployment.yaml.j2
+        - app-service.yaml.j2
+        - nginx-configmap.yaml.j2
+        - nginx-deployment.yaml.j2
+        - nginx-service.yaml.j2
+
+    - name: Appliquer les manifests Kubernetes
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - apply
+          - -f
+          - "{{ k8s_rendered_dir }}/{{ item | regex_replace('\\.j2$', '') }}"
+      loop:
+        - app-configmap.yaml.j2
+        - app-deployment.yaml.j2
+        - app-service.yaml.j2
+        - nginx-configmap.yaml.j2
+        - nginx-deployment.yaml.j2
+        - nginx-service.yaml.j2
+      register: apply_result
+      changed_when: "'unchanged' not in apply_result.stdout"
+
+    - name: Attendre que le déploiement de l'application soit prêt
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - rollout
+          - status
+          - deployment/locatic-app
+          - -n
+          - "{{ k8s_namespace }}"
+          - --timeout=120s
+      changed_when: false
+
+    - name: Attendre que le déploiement Nginx soit prêt
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - rollout
+          - status
+          - deployment/nginx
+          - -n
+          - "{{ k8s_namespace }}"
+          - --timeout=120s
+      changed_when: false
+
+    - name: Récupérer l'IP de minikube
+      ansible.builtin.command:
+        argv: [minikube, ip]
+      register: minikube_ip
+      changed_when: false
+
+    - name: Récupérer le NodePort de Nginx
+      ansible.builtin.command:
+        argv:
+          - kubectl
+          - get
+          - svc
+          - nginx
+          - -n
+          - "{{ k8s_namespace }}"
+          - -o
+          - jsonpath={.spec.ports[0].nodePort}
+      register: nginx_nodeport
+      changed_when: false
+
+    - name: Afficher l'URL
+      ansible.builtin.debug:
+        msg: "Application accessible via Nginx : http://{{ minikube_ip.stdout }}:{{ nginx_nodeport.stdout }}"
