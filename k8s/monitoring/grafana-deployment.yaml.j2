@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata:                                                                                                                                                                             name: grafana
+metadata:
+  name: grafana
   namespace: {{ k8s_namespace }}
   labels:
     app: grafana

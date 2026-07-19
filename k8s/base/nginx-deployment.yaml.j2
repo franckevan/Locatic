@@ -10,7 +10,8 @@ spec:
   selector:
     matchLabels:
       app: nginx
-  template: metadata:
+  template:
+    metadata:
       labels:
         app: nginx
     spec:
@@ -51,4 +52,4 @@ spec:
       volumes:
         - name: nginx-config
           configMap:
-            name: nginx-config 
+            name: nginx-config
