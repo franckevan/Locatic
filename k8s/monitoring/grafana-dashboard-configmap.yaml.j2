@@ -1,0 +1,651 @@
+Xavi_ouattaradongui
+xavi_ouattaradongui
+En ligne
+
+Xavi_ouattaradongui — 15:51
+JE NE VOIS PAS
+Franck — 15:52
+dans k8s
+Xavi_ouattaradongui — 15:54
+Y'a pas k8
+Franck — 15:56
+attend
+Xavi_ouattaradongui — 15:57
+j'ai reccuperer tout ce qu'il ya sur la branch main en fait
+est ce que c'est sa je devais reccuperer
+Franck — 15:59
+Ouais c’est sa c’est juste pas venu sur github je push encore
+Xavi_ouattaradongui — 16:01
+ah d'accord
+Xavi_ouattaradongui — 16:08
+j'attends
+Franck — 16:10
+ouais c'est venu recupere
+Xavi_ouattaradongui — 16:11
+okay
+Franck — 16:16
+tu as récupere?
+Xavi_ouattaradongui — 16:20
+mais y'a tout dedans
+je dois ajouter quoi
+Franck — 16:22
+Voilà tu dois modifier maintenant
+Xavi_ouattaradongui — 16:22
+je mets quoi en fait
+Franck — 16:23
+ce que j'ai envoyé
+Xavi_ouattaradongui — 16:24
+Franck — 16:28
+location /nginx_status {
+            stub_status;
+            allow 127.0.0.1;
+            deny all;
+        }
+    } voici ce que tu devais ajouter
+Xavi_ouattaradongui — 16:29
+Franck — 16:30
+Xavi_ouattaradongui — 16:31
+Si depart tu avais faire normalement comme j’ai dit la ça allait etre mieux 
+Chacun mets ce qu’il a à mettre et puis c’est tout mais cohan la on comprend pas ce qu’on doit faire
+Xavi_ouattaradongui — 16:32
+Le problème je sais même pas ce que je suis entrain de faire je comprends rien 
+Je dois push quoi je dois analyser quoi ect…
+J’ai mis la petite partie 
+Ensuis je fais quoi
+Franck — 16:33
+tu vas dans  nginx-deployment.yaml.j2
+Xavi_ouattaradongui — 16:33
+Envoie les fichiers améliorer, j’ai capté maintenant
+Franck — 16:35
+nginx-deployment.yaml.j2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: {{ k8s_namespace }}
+  labels:
+    app: nginx
+spec:
+  replicas: {{ nginx_replicas | default(1) }}
+  selector:
+    matchLabels:
+      app: nginx
+  template: metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: "nginx:1.27-alpine"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
+        - name: nginx-exporter
+          image: "nginx/nginx-prometheus-exporter:1.3.0"
+          args:
+            - "--nginx.scrape-uri=http://localhost/nginx_status"
+          ports:
+            - containerPort: 9113
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "64Mi"
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config 
+
+message.txt
+2 Ko
+Xavi_ouattaradongui — 16:36
+ensuite
+Franck — 16:37
+k8s/monitoring/kube-state-metrics-rbac.yaml.j2
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-state-metrics
+  namespace: {{ k8s_namespace }}--
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-state-metrics
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "persistentvolumeclaims", "persistentvolumes", "namespaces", "nodes"]
+    verbs: ["list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["list", "watch"]--
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-state-metrics
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kube-state-metrics
+subjects:
+  - kind: ServiceAccount
+    name: kube-state-metrics
+    namespace: {{ k8s_namespace }}
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 16:38
+ya pas MONITORING
+Franck — 16:39
+la tu dois crreer le dossier
+Xavi_ouattaradongui — 16:40
+c'est pas mieux je vais push ce que j'ai fait d'abord
+Franck — 16:42
+tu peux mais fait sa sur une autre branch comme la derniere fois
+Xavi_ouattaradongui — 16:43
+nom de la branch
+c'est bon j'ai fait
+Franck — 16:46
+j'etais entrai de demander a claude
+Xavi_ouattaradongui — 16:47
+ensuite
+Franck — 16:47
+tu as cree monitoring ?
+Xavi_ouattaradongui — 16:47
+j'ai creer montoring et j'ai mis le fichier
+Franck — 16:48
+k8s/monitoring/kube-state-metrics-deployment.yaml.j2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: {{ k8s_namespace }}
+  labels:
+    app: kube-state-metrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+  template:
+    metadata:
+      labels:
+        app: kube-state-metrics
+    spec:
+      serviceAccountName: kube-state-metrics
+      containers:
+        - name: kube-state-metrics
+          image: "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.13.0"
+          ports:
+            - containerPort: 8080
+              name: metrics
+          resources:
+            requests:
+              cpu: "20m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 16:50
+ensuite
+Franck — 16:50
+k8s/monitoring/kube-state-metrics-service.yaml.j2
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-state-metrics
+  namespace: {{ k8s_namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: kube-state-metrics
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: 8080
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 16:52
+ensuite
+Franck — 16:52
+k8s/monitoring/prometheus-configmap.yaml.j2
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: {{ k8s_namespace }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    rule_files:
+      - /etc/prometheus/rules.yml
+    scrape_configs:
+      - job_name: locatic-app
+        static_configs:
+          - targets: ["locatic-app:8080"]
+      - job_name: nginx
+        static_configs:
+          - targets: ["nginx:9113"]
+      - job_name: kube-state-metrics
+        static_configs:
+          - targets: ["kube-state-metrics:8080"]
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+  rules.yml: |
+    groups:
+      - name: locatic-alerts
+        rules:
+          - alert: AppDown
+            expr: up{job="locatic-app"} == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "L'application Locatic ne répond plus"
+              description: "Le endpoint /metrics de locatic-app est injoignable depuis 1 minute."
+          - alert: NginxDown
+            expr: up{job="nginx"} == 0
+            for: 1m labels:
+              severity: critical
+            annotations:
+              summary: "Nginx ne répond plus"
+              description: "L'exporter de métriques Nginx est injoignable depuis 1 minute."
+          - alert: SqlitePvcNotBound
+            expr: kube_persistentvolumeclaim_status_phase{namespace="{{ k8s_namespace }}", phase="Bound"} == 0
+            for: 2m
+            labels:
+              severity: warning
+            annotations:
+              summary: "Le volume SQLite n'est pas correctement monté"
+              description: "Le PersistentVolumeClaim de la base SQLite n'est pas à l'état Bound."
+
+message.txt
+2 Ko
+Xavi_ouattaradongui — 16:53
+ensuite
+Franck — 16:54
+k8s/monitoring/prometheus-deployment.yaml.j2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: {{ k8s_namespace }}
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: "prom/prometheus:v2.55.1"
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-config
+              mountPath: /etc/prometheus
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+
+message.txt
+2 Ko
+Xavi_ouattaradongui — 16:55
+suivant
+Franck — 16:56
+k8s/monitoring/prometheus-service.yaml.j2
+apiVersion: v1 kind: Service
+kind: Service                                                                                                                                                                   metadata:
+  name: prometheus
+  namespace: {{ k8s_namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: prometheus
+  ports:
+    - port: 9090
+      targetPort: 9090
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 16:57
+ensuite
+??
+Franck — 17:01
+Attends
+k8s/monitoring/grafana-secret.yaml.j2
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-admin
+  namespace: {{ k8s_namespace }}
+type: Opaque
+stringData:
+  admin-user: admin
+  admin-password: "{{ grafana_admin_password }}"
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 17:06
+c'est ok
+Franck — 17:06
+k8s/monitoring/grafana-datasource-configmap.yaml.j2
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: {{ k8s_namespace }}
+data:
+  datasource.yml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 17:07
+ensuite
+Franck — 17:09
+k8s/monitoring/grafana-dashboard-provisioning-configmap.yaml.j2
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provisioning
+  namespace: {{ k8s_namespace }}
+data:
+  dashboards.yml: |
+    apiVersion: 1
+    providers:
+      - name: Locatic
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 30
+        options:
+          path: /etc/grafana/provisioning/dashboards-json
+
+message.txt
+1 Ko
+Xavi_ouattaradongui — 17:10
+suivant
+Franck — 17:12
+k8s/monitoring/grafana-dashboard-configmap.yaml.j2 il peut avoir des erreurs quand tu copies demande a chatgpt
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-locatic
+  namespace: {{ k8s_namespace }}
+data:
+  locatic-overview.json: |
+    {
+      "title": "Locatic - Vue d'ensemble",
+      "uid": "locatic-overview",
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "30s",
+      "panels": [
+        {
+          "id": 1,
+          "title": "Application Locatic",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+          "targets": [{ "expr": "up{job=\"locatic-app\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 2,
+          "title": "Nginx",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+          "targets": [{ "expr": "up{job=\"nginx\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 3,
+          "title": "Prometheus",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+          "targets": [{ "expr": "up{job=\"prometheus\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },   { "color": "green", "value": 1 }
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 4,
+          "title": "Volume SQLite (PVC Bound)",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+          "targets": [{ "expr": "kube_persistentvolumeclaim_status_phase{phase=\"Bound\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 5,
+          "title": "Pods en cours d'exécution",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+          "targets": [{ "expr": "sum(kube_pod_status_phase{phase=\"Running\"})", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+... (25lignes restantes)
+
+message.txt
+4 Ko
+﻿
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-locatic
+  namespace: {{ k8s_namespace }}
+data:
+  locatic-overview.json: |
+    {
+      "title": "Locatic - Vue d'ensemble",
+      "uid": "locatic-overview",
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "30s",
+      "panels": [
+        {
+          "id": 1,
+          "title": "Application Locatic",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+          "targets": [{ "expr": "up{job=\"locatic-app\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 2,
+          "title": "Nginx",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+          "targets": [{ "expr": "up{job=\"nginx\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 3,
+          "title": "Prometheus",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+          "targets": [{ "expr": "up{job=\"prometheus\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },   { "color": "green", "value": 1 }
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 4,
+          "title": "Volume SQLite (PVC Bound)",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+          "targets": [{ "expr": "kube_persistentvolumeclaim_status_phase{phase=\"Bound\"}", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 5,
+          "title": "Pods en cours d'exécution",
+          "type": "stat",
+          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
+          "targets": [{ "expr": "sum(kube_pod_status_phase{phase=\"Running\"})", "refId": "A" }],
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 6,
+          "title": "Débit de requêtes - Application",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+ "targets": [{ "expr": "rate(http_request_duration_seconds_count[5m])", "refId": "A", "legendFormat": "{{
+'{{method}} {{code}}' }}" }]
+        },
+        {
+          "id": 7,
+          "title": "Débit de requêtes - Nginx",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+          "targets": [{ "expr": "rate(nginx_http_requests_total[5m])", "refId": "A" }]
+        }
+      ]
+    } 
