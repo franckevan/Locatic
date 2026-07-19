@@ -3,7 +3,8 @@ using Locatic.Domain.Interfaces;
 using Locatic.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Locatic.Infrastructure.Repositories{
+namespace Locatic.Infrastructure.Repositories
+{
 
     public class ReservationRepository : IReservationRepository
     {

@@ -1,4 +1,5 @@
-namespace Locatic.Application.DTOs{
+namespace Locatic.Application.DTOs
+{
 
 
 
@@ -9,7 +10,7 @@ namespace Locatic.Application.DTOs{
 
 
         public DateTime EndDate { get; set; }
-        
+
         public int CarId { get; set; }
         public int ClientId { get; set; }
 

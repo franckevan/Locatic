@@ -1,4 +1,5 @@
-namespace Locatic.Application.DTOs{
+namespace Locatic.Application.DTOs
+{
 
 
     public class CreateCarDto
@@ -12,9 +13,9 @@ namespace Locatic.Application.DTOs{
         public int Seats { get; set; }
 
         public string FuelType { get; set; } = string.Empty;
-        
+
         public int CarModelId { get; set; }
     }
 
 
-}   
+}

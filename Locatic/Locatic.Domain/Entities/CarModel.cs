@@ -7,7 +7,7 @@ namespace Locatic.Domain.Entities
 
         public string Name { get; set; } = string.Empty;
 
-        public int BrandId { get; set; } 
+        public int BrandId { get; set; }
 
         public Brand Brand { get; set; } = null!;
 

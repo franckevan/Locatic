@@ -3,7 +3,8 @@ using Locatic.Application.Interfaces;
 using Locatic.Domain.Entities;
 using Locatic.Domain.Interfaces;
 
-namespace Locatic.Application.Services{
+namespace Locatic.Application.Services
+{
 
     public class BrandService : IBrandService
     {
@@ -17,16 +18,14 @@ namespace Locatic.Application.Services{
         public async Task<IEnumerable<BrandDto>> GetAllAsync()
         {
             var brands = await _repository.GetAllAsync();
-
             return brands.Select(b => new BrandDto { Id = b.Id, Name = b.Name, Country = b.Country });
         }
 
         public async Task<BrandDto?> GetByIdAsync(int id)
         {
-            var brand = await _repository.GetByIdAsync(id);
-            if (brand == null) return null;
-
-            return new BrandDto { Id = brand.Id, Name = brand.Name, Country = brand.Country };
+            var b = await _repository.GetByIdAsync(id);
+            if (b == null) return null;
+            return new BrandDto { Id = b.Id, Name = b.Name, Country = b.Country };
         }
 
         public async Task CreateAsync(CreateBrandDto dto)
@@ -39,10 +38,8 @@ namespace Locatic.Application.Services{
         {
             var brand = await _repository.GetByIdAsync(id);
             if (brand == null) return;
-            
             brand.Name = dto.Name;
             brand.Country = dto.Country;
-
             await _repository.UpdateAsync(brand);
         }
 

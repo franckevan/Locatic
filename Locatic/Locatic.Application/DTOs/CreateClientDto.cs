@@ -1,4 +1,5 @@
-namespace Locatic.Application.DTOs{
+namespace Locatic.Application.DTOs
+{
 
     public class CreateClientDto
     {
@@ -10,7 +11,7 @@ namespace Locatic.Application.DTOs{
         public string PhoneNumber { get; set; } = string.Empty;
 
 
-        
+
     }
 
 

@@ -2,7 +2,8 @@ using Locatic.Application.DTOs;
 using Locatic.Application.Interfaces;
 using Locatic.Domain.Entities;
 using Locatic.Domain.Interfaces;
-namespace Locatic.Application.Services{
+namespace Locatic.Application.Services
+{
     public class CarService : ICarService
     {
         private readonly ICarRepository _repository;

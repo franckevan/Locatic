@@ -1,31 +1,29 @@
 using Locatic.Application.Interfaces;
 using Locatic.Application.Services;
 using Locatic.Domain.Interfaces;
-using Locatic.Infrastructure.Data;
 using Locatic.Infrastructure.Repositories;
+using Locatic.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddDbContext<LocaticDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICarModelRepository, CarModelRepository>();
 builder.Services.AddScoped<ICarModelService, CarModelService>();
-
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
-
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
-
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IReservationService, ReservationService>();
-
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<IBrandService, BrandService>();
+
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<LocaticDbContext>();
 
 var app = builder.Build();
 
@@ -42,15 +40,13 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseStaticFiles();   // Sert les fichiers de wwwroot
-
 app.UseRouting();
-
 app.UseAuthorization();
-
+app.MapStaticAssets();
+app.MapHealthChecks("/health");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();

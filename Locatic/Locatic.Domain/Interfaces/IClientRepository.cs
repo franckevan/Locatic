@@ -2,7 +2,8 @@ using Locatic.Domain.Entities;
 
 
 
-namespace Locatic.Domain.Interfaces{
+namespace Locatic.Domain.Interfaces
+{
 
 
 
@@ -15,7 +16,7 @@ namespace Locatic.Domain.Interfaces{
         Task AddAsync(Client client);
 
         Task UpdateAsync(Client client);
-        
+
         Task DeleteAsync(int id);
 
     }

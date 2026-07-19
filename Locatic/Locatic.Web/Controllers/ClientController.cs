@@ -2,7 +2,8 @@ using Locatic.Application.DTOs;
 using Locatic.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Locatic.Web.Controllers{
+namespace Locatic.Web.Controllers
+{
 
     public class ClientController : Controller
     {
