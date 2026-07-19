@@ -3,7 +3,7 @@ k8s_namespace: locatic
 
 app_image_name: ghcr.io/franckevan/locatic
 app_image_tag: latest
-app_image_pull_policy: IfNotPresent
+app_image_pull_policy: Always
 app_replicas: 1
 app_environment: Production
 sqlite_db_path: /data/locatic.db
@@ -11,6 +11,9 @@ sqlite_db_path: /data/locatic.db
 nginx_replicas: 1
 nginx_service_type: NodePort
 
+grafana_admin_password: "changeme"
+
 terraform_dir: "{{ playbook_dir }}/../infra/terraform"
 k8s_templates_dir: "{{ playbook_dir }}/../k8s/base"
+k8s_monitoring_dir: "{{ playbook_dir }}/../k8s/monitoring"
 k8s_rendered_dir: "{{ playbook_dir }}/../k8s/rendered"

@@ -1,17 +1,17 @@
 variable "kube_context" {
-  description = "Contexte kubectl à utiliser (cluster minikube local)"
+  description = "contexte kubectl a utiliser"
   type        = string
   default     = "minikube"
 }
 
 variable "namespace" {
-  description = "Namespace Kubernetes de l'application Locatic"
+  description = "namespace kubernetes pour l'appli"
   type        = string
   default     = "locatic"
 }
 
 variable "sqlite_storage_size" {
-  description = "Taille du volume persistant pour la base SQLite"
+  description = "taille du volume pour sqlite"
   type        = string
   default     = "1Gi"
 }
